@@ -28,13 +28,16 @@ public class PantalladeJuego extends javax.swing.JFrame {
         
         ImageIcon imagenBasurero = new ImageIcon(getClass().getResource("/Imagenes/basurero.png"));
         ImageIcon imagenPlato = new ImageIcon(getClass().getResource("/Imagenes/plato.png"));
+        ImageIcon imagenCampana = new ImageIcon(getClass().getResource("/Imagenes/campana.png"));
         
         ImageIcon scaledImageBasura = new ImageIcon(ajusteImagenes(imagenBasurero));
         ImageIcon scaledImagePlato = new ImageIcon(ajusteImagenes(imagenPlato));
+        ImageIcon scaledImageCampana = new ImageIcon(ajusteImagenes(imagenCampana));
         
 
         Basurero.setIcon(scaledImageBasura);
         Plato.setIcon(scaledImagePlato);
+        CampanaEntrega.setIcon(scaledImageCampana);
         timer.start();
         timerOrden.start();
         
@@ -90,25 +93,26 @@ public class PantalladeJuego extends javax.swing.JFrame {
                     Cola.obtenerInstancia().encolar(generarOrdenAleatoria());
                     actualizarOrdenes();
                 }
+                timerOrden.start();
             }
         });
     
     private void actualizarOrdenes() {
         Orden[] ordenesActuales = Cola.obtenerInstancia().mostrarOrdenes();
-        if (Orden1.getText().isEmpty()) {
+        if (Orden1.getIcon() == null) {
             if (ordenesActuales[0] != null) {
                 //Orden1.setText(ordenesActuales[0].getNombre());
                 cargarImagenLabel(ordenesActuales[0].getNombre(), Orden1);
             }
-        } else if (Orden2.getText().isEmpty()) {
+        } else if (Orden2.getIcon() == null) {
             if (ordenesActuales[1] != null) {
                 //Orden2.setText(ordenesActuales[1].getNombre());
-                cargarImagenLabel(ordenesActuales[0].getNombre(), Orden2);
+                cargarImagenLabel(ordenesActuales[1].getNombre(), Orden2);
             }
-        } else if (Orden3.getText().isEmpty()) {
+        } else if (Orden3.getIcon() == null) {
             if (ordenesActuales[2] != null) {
                 //Orden3.setText(ordenesActuales[2].getNombre());
-                cargarImagenLabel(ordenesActuales[0].getNombre(), Orden3);
+                cargarImagenLabel(ordenesActuales[2].getNombre(), Orden3);
             }
         }
     }
@@ -148,6 +152,7 @@ public class PantalladeJuego extends javax.swing.JFrame {
         Orden1 = new javax.swing.JLabel();
         Orden2 = new javax.swing.JLabel();
         Orden3 = new javax.swing.JLabel();
+        CampanaEntrega = new javax.swing.JLabel();
 
         jLabel2.setText("jLabel2");
 
@@ -164,8 +169,6 @@ public class PantalladeJuego extends javax.swing.JFrame {
         EspacioCinta4.setText("jLabel1");
 
         Basurero.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagenes/basurero.png"))); // NOI18N
-
-        Plato.setText("jLabel1");
 
         timeLabel.setText("Tiempo: 5:00");
 
@@ -199,7 +202,9 @@ public class PantalladeJuego extends javax.swing.JFrame {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(150, 150, 150)
+                        .addContainerGap()
+                        .addComponent(CampanaEntrega, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(53, 53, 53)
                         .addComponent(Plato, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(91, 91, 91)
                         .addComponent(Basurero, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -233,10 +238,12 @@ public class PantalladeJuego extends javax.swing.JFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(EspacioCinta5, javax.swing.GroupLayout.PREFERRED_SIZE, 61, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(EspacioCinta1, javax.swing.GroupLayout.PREFERRED_SIZE, 61, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(73, 73, 73)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(Plato, javax.swing.GroupLayout.PREFERRED_SIZE, 61, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(Basurero, javax.swing.GroupLayout.PREFERRED_SIZE, 61, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(68, 68, 68)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(Plato, javax.swing.GroupLayout.PREFERRED_SIZE, 61, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(Basurero, javax.swing.GroupLayout.PREFERRED_SIZE, 61, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(CampanaEntrega, javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
         );
 
@@ -299,6 +306,7 @@ public class PantalladeJuego extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel Basurero;
+    private javax.swing.JLabel CampanaEntrega;
     private javax.swing.JLabel EspacioCinta1;
     private javax.swing.JLabel EspacioCinta2;
     private javax.swing.JLabel EspacioCinta3;
