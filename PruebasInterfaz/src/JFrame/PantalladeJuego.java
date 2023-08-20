@@ -10,6 +10,7 @@ import java.awt.event.ActionListener;
 import javax.swing.*;
 import java.util.Random;
 import java.awt.event.*;
+import overcook.*;
 
 /**
  *
@@ -26,16 +27,27 @@ public class PantalladeJuego extends javax.swing.JFrame {
         initComponents();
         
         ImageIcon imagenBasurero = new ImageIcon(getClass().getResource("/Imagenes/basurero.png"));
+        ImageIcon imagenPlato = new ImageIcon(getClass().getResource("/Imagenes/plato.png"));
         
-        int width = 75;  // Ancho deseado
-        int height = 75; // Alto deseado
-        Image originalImage = imagenBasurero.getImage();
-        Image scaledImage = originalImage.getScaledInstance(width, height, Image.SCALE_SMOOTH);
-        ImageIcon scaledImageIcon = new ImageIcon(scaledImage);
+        ImageIcon scaledImageBasura = new ImageIcon(ajusteImagenes(imagenBasurero));
+        ImageIcon scaledImagePlato = new ImageIcon(ajusteImagenes(imagenPlato));
+        
 
-        Basurero.setIcon(scaledImageIcon);
+        Basurero.setIcon(scaledImageBasura);
+        Plato.setIcon(scaledImagePlato);
         timer.start();
+        timerOrden.start();
         
+    }
+    
+    public Image ajusteImagenes(ImageIcon imagen){
+    
+       int width = 75;  // Ancho deseado
+       int height = 75; // Alto deseado
+       Image originalImage = imagen.getImage();
+       Image scaledImage = originalImage.getScaledInstance(width, height, Image.SCALE_SMOOTH); 
+       return scaledImage;
+    
     }
     
     // Timer para actualizar la interfaz
@@ -58,7 +70,60 @@ public class PantalladeJuego extends javax.swing.JFrame {
             }
         });
         
-
+    private Orden generarOrdenAleatoria() {
+        int random = new Random().nextInt(3);
+        switch(random) {
+            case 0:
+                return new Orden("Hamburguesadecarne", new String[]{"pan", "carne"}, 5);
+            case 1:
+                return new Orden("Hamburguesaconqueso", new String[]{"pan", "carne", "queso"}, 10);
+            default:
+                return new Orden("Hamburguesaclasica", new String[]{"pan", "carne", "lechuga", "queso"}, 15);
+        }
+    }
+    
+    int delayOrden = 20000; // 20 segundos
+        Timer timerOrden = new Timer(delayOrden, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent evt) {
+                if (Cola.obtenerInstancia().size() < 3) {
+                    Cola.obtenerInstancia().encolar(generarOrdenAleatoria());
+                    actualizarOrdenes();
+                }
+            }
+        });
+    
+    private void actualizarOrdenes() {
+        Orden[] ordenesActuales = Cola.obtenerInstancia().mostrarOrdenes();
+        if (Orden1.getText().isEmpty()) {
+            if (ordenesActuales[0] != null) {
+                //Orden1.setText(ordenesActuales[0].getNombre());
+                cargarImagenLabel(ordenesActuales[0].getNombre(), Orden1);
+            }
+        } else if (Orden2.getText().isEmpty()) {
+            if (ordenesActuales[1] != null) {
+                //Orden2.setText(ordenesActuales[1].getNombre());
+                cargarImagenLabel(ordenesActuales[0].getNombre(), Orden2);
+            }
+        } else if (Orden3.getText().isEmpty()) {
+            if (ordenesActuales[2] != null) {
+                //Orden3.setText(ordenesActuales[2].getNombre());
+                cargarImagenLabel(ordenesActuales[0].getNombre(), Orden3);
+            }
+        }
+    }
+    
+    private void cargarImagenLabel(String nombreOrden, JLabel label) {
+    ImageIcon imagen = new ImageIcon(getClass().getResource("/Imagenes/" + nombreOrden.toLowerCase() + ".png"));
+    int width = 61;  // Ancho deseado
+    int height = 61; // Alto deseado
+    Image originalImage = imagen.getImage();
+    Image scaledImage = originalImage.getScaledInstance(width, height, Image.SCALE_SMOOTH);
+    ImageIcon scaledImageIcon = new ImageIcon(scaledImage);
+    label.setIcon(scaledImageIcon);
+}
+        
+    
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -76,13 +141,13 @@ public class PantalladeJuego extends javax.swing.JFrame {
         EspacioCinta2 = new javax.swing.JLabel();
         EspacioCinta3 = new javax.swing.JLabel();
         EspacioCinta4 = new javax.swing.JLabel();
-        Orden2 = new javax.swing.JTextField();
-        Orden3 = new javax.swing.JTextField();
-        Orden1 = new javax.swing.JTextField();
         Basurero = new javax.swing.JLabel();
         Plato = new javax.swing.JLabel();
         timeLabel = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
+        Orden1 = new javax.swing.JLabel();
+        Orden2 = new javax.swing.JLabel();
+        Orden3 = new javax.swing.JLabel();
 
         jLabel2.setText("jLabel2");
 
@@ -98,12 +163,6 @@ public class PantalladeJuego extends javax.swing.JFrame {
 
         EspacioCinta4.setText("jLabel1");
 
-        Orden2.setEnabled(false);
-
-        Orden3.setEnabled(false);
-
-        Orden1.setEnabled(false);
-
         Basurero.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagenes/basurero.png"))); // NOI18N
 
         Plato.setText("jLabel1");
@@ -117,45 +176,41 @@ public class PantalladeJuego extends javax.swing.JFrame {
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(150, 150, 150)
-                .addComponent(Plato, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(91, 91, 91)
-                .addComponent(Basurero, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(0, 0, Short.MAX_VALUE)
+                .addComponent(timeLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 79, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 94, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(132, 132, 132))
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(48, 48, 48)
+                .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(Orden1, javax.swing.GroupLayout.PREFERRED_SIZE, 114, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 94, Short.MAX_VALUE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(timeLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 79, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(Orden2, javax.swing.GroupLayout.PREFERRED_SIZE, 114, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(80, 80, 80)
-                        .addComponent(Orden3, javax.swing.GroupLayout.PREFERRED_SIZE, 114, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(53, 53, 53))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                        .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 94, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(132, 132, 132))))
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addContainerGap()
                         .addComponent(EspacioCinta5, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(EspacioCinta1, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                        .addContainerGap()
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(97, 97, 97)
                         .addComponent(EspacioCinta4, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(EspacioCinta3, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(EspacioCinta2, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(150, 150, 150)
+                        .addComponent(Plato, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(91, 91, 91)
+                        .addComponent(Basurero, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(82, 82, 82)
+                        .addComponent(Orden1, javax.swing.GroupLayout.PREFERRED_SIZE, 128, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(41, 41, 41)
+                        .addComponent(Orden2, javax.swing.GroupLayout.PREFERRED_SIZE, 128, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(35, 35, 35)
+                        .addComponent(Orden3, javax.swing.GroupLayout.PREFERRED_SIZE, 128, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(75, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -164,12 +219,12 @@ public class PantalladeJuego extends javax.swing.JFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(timeLabel)
                     .addComponent(jLabel3))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 59, Short.MAX_VALUE)
+                .addGap(74, 74, 74)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(Orden2, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(Orden3, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(Orden1, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(88, 88, 88)
+                    .addComponent(Orden1, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(Orden2, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(Orden3, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 85, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(EspacioCinta4, javax.swing.GroupLayout.PREFERRED_SIZE, 61, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(EspacioCinta3, javax.swing.GroupLayout.PREFERRED_SIZE, 61, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -249,9 +304,9 @@ public class PantalladeJuego extends javax.swing.JFrame {
     private javax.swing.JLabel EspacioCinta3;
     private javax.swing.JLabel EspacioCinta4;
     private javax.swing.JLabel EspacioCinta5;
-    private javax.swing.JTextField Orden1;
-    private javax.swing.JTextField Orden2;
-    private javax.swing.JTextField Orden3;
+    private javax.swing.JLabel Orden1;
+    private javax.swing.JLabel Orden2;
+    private javax.swing.JLabel Orden3;
     private javax.swing.JLabel Plato;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
